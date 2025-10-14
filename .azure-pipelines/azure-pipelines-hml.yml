@@ -7,11 +7,11 @@ variables:
   - name: ENVIRONMENT
     value: 'HML'
   - name: NEMESYS_URL_HML
-    value: 'https://nemesys.hml.nossafintech.com.br'
+    value: 'https://'
   - name: NEMESYS_USER_HML
-    value: 'emerson.teste'
+    value: ''
   - name: NEMESYS_PASSWORD_HML
-    value: 'Fintech@2025'
+    value: ''
   - name: PLAYWRIGHT_HEADLESS
     value: 'true'
   - name: PLAYWRIGHT_SLOW_MO
