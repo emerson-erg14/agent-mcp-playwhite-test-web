@@ -1,6 +1,6 @@
-# Playwright MCP - Projeto NEMESYS
+# Playwright MCP - Projeto Agent
 
-Este projeto combina Playwright com MCP (Model Context Protocol) para automação de testes no sistema NEMESYS da Nossa Fintech.
+Este projeto combina Playwright com MCP (Model Context Protocol) para automação de testes em sistemas Web.
 
 ## 🚀 Configuração
 
@@ -34,8 +34,8 @@ cp .env.example .env
 ENVIRONMENT=HML
 
 # URLs dos ambientes
-NEMESYS_URL_HML=https://nemesys.hml.nossafintech.com.br
-NEMESYS_URL_PROD=https://nemesys.nossafintech.com.br
+NEMESYS_URL_HML=
+NEMESYS_URL_PROD=
 
 # Credenciais HML
 NEMESYS_USER_HML=seu_usuario_hml
