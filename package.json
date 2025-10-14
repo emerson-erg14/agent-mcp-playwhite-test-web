@@ -1,0 +1,43 @@
+{
+  "name": "playwright-mcp-project",
+  "version": "1.0.0",
+  "description": "Projeto Playwright com integração MCP (Model Context Protocol)",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "mcp:start": "node mcp-server.js",
+    "mcp:test": "node test-mcp.js",
+    "mcp:explore": "node mcp-explorer.js",
+    "mcp:generate": "node mcp-test-generator.js",
+    "mcp:bdd": "node mcp-bdd-runner.js",
+    "mcp:run": "npm run mcp:explore && npm run mcp:generate && npm run test",
+    "test:geolocation": "node test-geolocation.js",
+    "install:browsers": "playwright install",
+    "dev": "concurrently \"npm run mcp:start\" \"npm run test:ui\"",
+    "setup": "node global-setup.js",
+    "postinstall": "echo 'Dependências instaladas com sucesso'"
+  },
+  "keywords": [
+    "playwright",
+    "mcp",
+    "testing",
+    "automation",
+    "e2e"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "dotenv": "^16.6.1",
+    "ws": "^8.14.2",
+    "playwright": "^1.40.0"
+  }
+}

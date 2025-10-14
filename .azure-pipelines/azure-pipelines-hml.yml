@@ -1,0 +1,176 @@
+trigger: none
+pr: none
+
+variables:
+  - name: nodeVersion
+    value: '18.x'
+  - name: ENVIRONMENT
+    value: 'HML'
+  - name: NEMESYS_URL_HML
+    value: 'https://nemesys.hml.nossafintech.com.br'
+  - name: NEMESYS_USER_HML
+    value: 'emerson.teste'
+  - name: NEMESYS_PASSWORD_HML
+    value: 'Fintech@2025'
+  - name: PLAYWRIGHT_HEADLESS
+    value: 'true'
+  - name: PLAYWRIGHT_SLOW_MO
+    value: '100'  # Reduzido para velocidade
+  - name: GEOLOCATION_LATITUDE
+    value: '-23.5505'
+  - name: GEOLOCATION_LONGITUDE
+    value: '-46.6333'
+  - name: GEOLOCATION_ACCURACY
+    value: '100'
+  - name: TIMEZONE_ID
+    value: 'America/Sao_Paulo'
+  - name: LOCALE
+    value: 'pt-BR'
+
+stages:
+  - stage: TestHML
+    displayName: 'Testes HML (Rápido)'
+    jobs:
+      - job: HMLTests
+        displayName: 'Executar Testes HML'
+        timeoutInMinutes: 15  # Reduzido de 25 para 15 minutos
+        pool:
+          vmImage: 'ubuntu-latest'
+        
+        steps:
+          - task: NodeTool@0
+            displayName: 'Instalar Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+          
+          - script: |
+              echo "📦 Instalando dependências..."
+              npm ci
+            displayName: 'Instalar Dependências'
+          
+          - script: |
+              echo "🎭 Instalando Playwright (apenas Chromium)..."
+              npx playwright install chromium --with-deps
+            displayName: 'Instalar Playwright'
+          
+          - script: |
+              echo "📁 Criando diretórios..."
+              mkdir -p screenshots
+              mkdir -p test-results
+              
+              echo "🔧 Configurando variáveis de ambiente..."
+              echo "URL=$(NEMESYS_URL_HML)" > .env
+              echo "USER=$(NEMESYS_USER_HML)" >> .env
+              echo "PASSWORD=$(NEMESYS_PASSWORD_HML)" >> .env
+              echo "HEADLESS=$(PLAYWRIGHT_HEADLESS)" >> .env
+              echo "SLOW_MO=$(PLAYWRIGHT_SLOW_MO)" >> .env
+              echo "LATITUDE=$(GEOLOCATION_LATITUDE)" >> .env
+              echo "LONGITUDE=$(GEOLOCATION_LONGITUDE)" >> .env
+              echo "ACCURACY=$(GEOLOCATION_ACCURACY)" >> .env
+              echo "TIMEZONE_ID=$(TIMEZONE_ID)" >> .env
+              echo "LOCALE=$(LOCALE)" >> .env
+              echo "ENVIRONMENT=$(ENVIRONMENT)" >> .env
+              echo "Arquivo .env criado com sucesso para HML"
+            displayName: 'Configurar Ambiente'
+          
+          - script: |
+              echo "🧪 Executando teste básico HML (BDD)..."
+              npx playwright test tests/nemesys-basic.spec.js --reporter=json --reporter=html > test-results/basic-results.json
+            displayName: 'Executar Teste Básico HML (BDD)'
+            continueOnError: true
+          
+          - script: |
+              echo "🎭 Executando testes MCP BDD HML..."
+              npx playwright test tests/nemesys-mcp-bdd.spec.js --reporter=json --reporter=html > test-results/mcp-results.json
+            displayName: 'Executar Testes MCP BDD HML'
+            continueOnError: true
+          
+          - script: |
+              echo "🔄 Gerando arquivos XML JUnit..."
+              node simple-junit-generator.js
+            displayName: 'Gerar XML JUnit'
+            continueOnError: true
+          
+          - script: |
+              echo "📊 Verificando resultados..."
+              echo "🔍 Verificando diretório test-results..."
+              ls -la test-results/ || echo "Diretório test-results não encontrado"
+              echo "🔍 Procurando arquivos XML..."
+              find . -name "*.xml" -type f || echo "Nenhum arquivo XML encontrado"
+              echo "🔍 Procurando arquivos JSON..."
+              find . -name "*.json" -type f || echo "Nenhum arquivo JSON encontrado"
+              echo "🔍 Procurando arquivos HTML..."
+              find . -name "*.html" -type f || echo "Nenhum arquivo HTML encontrado"
+              echo "🔍 Verificando screenshots..."
+              if [ -d "screenshots" ]; then
+                ls -la screenshots/ || echo "Erro ao listar screenshots"
+              fi
+              echo "📊 Verificando playwright-report..."
+              if [ -d "playwright-report" ]; then
+                ls -la playwright-report/ || echo "Erro ao listar playwright-report"
+              else
+                echo "Diretório playwright-report não encontrado, criando..."
+                mkdir -p playwright-report
+              fi
+              echo "🔍 Verificando se arquivos XML foram gerados..."
+              if [ -f "test-results/results.xml" ]; then
+                echo "✅ Arquivo XML encontrado: test-results/results.xml"
+                cat test-results/results.xml | head -20
+              else
+                echo "❌ Arquivo XML não encontrado em test-results/results.xml"
+                echo "🔍 Listando conteúdo de test-results:"
+                ls -la test-results/ || echo "Diretório test-results vazio ou não existe"
+              fi
+            displayName: 'Verificar Resultados'
+            continueOnError: true
+          
+          - task: PublishTestResults@2
+            displayName: 'Publicar Resultados de Teste HML'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'test-results/*.xml'
+              testRunTitle: 'NEMESYS HML - $(Build.BuildNumber)'
+              mergeTestResults: true
+              failTaskOnFailedTests: false
+              publishRunAttachments: true
+            condition: always()
+          
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publicar Relatórios HML'
+            inputs:
+              pathToPublish: 'test-results'
+              artifactName: 'HML-Reports-$(Build.BuildNumber)'
+            condition: always()
+          
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publicar Relatórios HTML HML'
+            inputs:
+              pathToPublish: 'playwright-report'
+              artifactName: 'HML-HTML-Reports-$(Build.BuildNumber)'
+            condition: always()
+          
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publicar Screenshots HML'
+            inputs:
+              pathToPublish: 'screenshots'
+              artifactName: 'HML-Screenshots-$(Build.BuildNumber)'
+            condition: always()
+
+  - stage: NotifyHML
+    displayName: 'Notificação HML'
+    dependsOn: TestHML
+    condition: always()
+    jobs:
+      - job: NotifyJob
+        displayName: 'Notificar Resultado HML'
+        pool:
+          vmImage: 'ubuntu-latest'
+        
+        steps:
+          - script: |
+              echo "📢 Pipeline HML concluída!"
+              echo "🔗 Build: $(Build.BuildNumber)"
+              echo "🌐 Ambiente: HML"
+              echo "⏱️ Tempo estimado: ~8-10 minutos"
+              echo "📊 Verifique os artefatos publicados para relatórios e screenshots"
+            displayName: 'Notificar Conclusão HML'

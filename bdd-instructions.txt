@@ -1,0 +1,319 @@
+# Instruções BDD para MCP Runner - NEMESYS
+# Formato: AÇÃO: ELEMENTO: VALOR (opcional)
+# Exemplos:
+
+# ===========================================
+# CENÁRIO BDD 1: LOGIN NO SISTEMA
+# ===========================================
+# Given: Dado que estou na página de login
+# When: Quando preencho as credenciais corretas
+# Then: Então devo ser redirecionado para o dashboard
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: text="Dashboard", text="Painel", .dashboard, .home:visible
+SCREENSHOT: cenario-bdd-1-login-sucesso.png
+
+# ===========================================
+# CENÁRIO BDD 2: NAVEGAÇÃO POR MENUS
+# ===========================================
+# Given: Dado que estou logado no sistema
+# When: Quando clico em um item do menu
+# Then: Então devo ser direcionado para a página correspondente
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: nav, .nav, .menu, .sidebar, .navigation:visible
+CLICK: nav a, .nav a, .menu a, .sidebar a
+WAIT: 2000
+SCREENSHOT: cenario-bdd-2-navegacao-menu.png
+
+# ===========================================
+# CENÁRIO BDD 3: PREENCHIMENTO DE FORMULÁRIO
+# ===========================================
+# Given: Dado que estou em uma página com formulário
+# When: Quando preencho os campos obrigatórios
+# Then: Então devo conseguir submeter o formulário
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: form, .form:visible
+FILL: input[type="text"], input[name="nome"], input[name="name"]:João Silva
+FILL: input[type="email"], input[name="email"]:joao@email.com
+FILL: input[type="tel"], input[name="telefone"]:11999999999
+SELECT: select[name="cargo"]:Administrador
+CHECK: input[type="checkbox"]:aceito_termos
+CLICK: button[type="submit"], input[type="submit"]
+WAIT: 2000
+SCREENSHOT: cenario-bdd-3-formulario-preenchido.png
+
+# ===========================================
+# CENÁRIO BDD 4: VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS
+# ===========================================
+# Given: Dado que estou em um formulário
+# When: Quando deixo campos obrigatórios vazios
+# Then: Então devo ver mensagens de erro
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: form, .form:visible
+CLICK: button[type="submit"], input[type="submit"]
+WAIT: 2000
+VERIFY: .error, .alert-danger, .invalid, [aria-invalid="true"]:visible
+SCREENSHOT: cenario-bdd-4-validacao-campos.png
+
+# ===========================================
+# CENÁRIO BDD 5: TESTE DE RESPONSIVIDADE
+# ===========================================
+# Given: Dado que estou no sistema
+# When: Quando acesso em diferentes resoluções
+# Then: Então a interface deve se adaptar corretamente
+
+# Desktop (1920x1080)
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+SET_VIEWPORT: 1920,1080
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT: 1000
+SCREENSHOT: cenario-bdd-5-responsividade-desktop.png
+
+# Laptop (1366x768)
+SET_VIEWPORT: 1366,768
+WAIT: 1000
+SCREENSHOT: cenario-bdd-5-responsividade-laptop.png
+
+# Tablet (768x1024)
+SET_VIEWPORT: 768,1024
+WAIT: 1000
+SCREENSHOT: cenario-bdd-5-responsividade-tablet.png
+
+# Mobile (375x667)
+SET_VIEWPORT: 375,667
+WAIT: 1000
+SCREENSHOT: cenario-bdd-5-responsividade-mobile.png
+
+# ===========================================
+# CENÁRIO BDD 6: TESTE DE MENSAGENS DO SISTEMA
+# ===========================================
+# Given: Dado que estou no sistema
+# When: Quando realizo ações
+# Then: Então devo ver mensagens de feedback apropriadas
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: .alert, .message, .notification, .toast, .feedback:visible
+VERIFY: .alert, .message, .notification, .toast, .feedback:visible
+SCREENSHOT: cenario-bdd-6-mensagens-sistema.png
+
+# ===========================================
+# CENÁRIO BDD 7: TESTE DE MODAIS E POPUPS
+# ===========================================
+# Given: Dado que estou no sistema
+# When: Quando clico em elementos que abrem modais
+# Then: Então os modais devem abrir e fechar corretamente
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: .modal, .popup, .dialog, [role="dialog"]:visible
+VERIFY: .modal, .popup, .dialog, [role="dialog"]:visible
+SCREENSHOT: cenario-bdd-7-modais-popups.png
+
+# ===========================================
+# CENÁRIO BDD 8: TESTE DE TABELAS E LISTAS
+# ===========================================
+# Given: Dado que estou no sistema
+# When: Quando acesso páginas com dados
+# Then: Então as tabelas e listas devem ser exibidas corretamente
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: table, .table, ul, ol, .list:visible
+VERIFY: table, .table, ul, ol, .list:visible
+SCREENSHOT: cenario-bdd-8-tabelas-listas.png
+
+# ===========================================
+# CENÁRIO BDD 9: TESTE DE BOTÕES E INTERAÇÕES
+# ===========================================
+# Given: Dado que estou no sistema
+# When: Quando clico em botões
+# Then: Então as ações correspondentes devem ser executadas
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: button, .btn, input[type="button"]:visible
+CLICK: button, .btn, input[type="button"]
+WAIT: 2000
+SCREENSHOT: cenario-bdd-9-botoes-interacoes.png
+
+# ===========================================
+# CENÁRIO BDD 10: TESTE DE VALIDAÇÃO DE FORMULÁRIOS
+# ===========================================
+# Given: Dado que estou em um formulário
+# When: Quando preencho dados inválidos
+# Then: Então devo ver mensagens de validação
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: form, .form:visible
+FILL: input[type="email"], input[name="email"]:email-invalido
+CLICK: button[type="submit"], input[type="submit"]
+WAIT: 2000
+VERIFY: .error, .alert-danger, .invalid, [aria-invalid="true"]:visible
+SCREENSHOT: cenario-bdd-10-validacao-formularios.png
+
+# ===========================================
+# AÇÕES BDD SUPORTADAS
+# ===========================================
+
+# Navegação
+NAVIGATE: /usuarios
+REFRESH
+BACK
+FORWARD
+
+# Interações
+CLICK: .sidebar-menu-item:Usuários
+CLICK: .submenu-item:Cadastrar Usuário
+FILL: input[name="nome"]:João Silva
+FILL: input[name="email"]:joao@email.com
+FILL: input[name="telefone"]:11999999999
+SELECT: select[name="cargo"]:Administrador
+CHECK: input[type="checkbox"]:aceito_termos
+
+# Validações
+VERIFY: .success-message:Usuário cadastrado com sucesso
+VERIFY: .error-message
+VERIFY: input[name="email"]:invalid
+
+# Aguardar elementos
+WAIT_FOR: .loading-spinner:hidden
+WAIT_FOR: .success-message:visible
+WAIT: 2000
+
+# Screenshots
+SCREENSHOT: usuario-cadastrado.png
+
+# Configurações
+SET_VIEWPORT: 1920,1080
+
+# ===========================================
+# CENÁRIO BDD 11: SUPERVISOR ACESSANDO CRM->RELATÓRIO
+# ===========================================
+# Given: Dado que eu Supervisor estou na página Home
+# When: Quando acesso o CRM->Relatório
+# And: E clicar no botão Filtrar
+# Then: Então deve ser retornado o filtro do Relatório
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+WAIT_FOR: text="Dashboard", text="Painel", .dashboard, .home:visible
+SCREENSHOT: supervisor-home-page.png
+
+# When: quando acesso o CRM->Relatório
+CLICK: .menu-item:CRM, .nav-item:CRM, [data-menu="crm"]
+WAIT: 1000
+CLICK: .submenu-item:Relatório, .menu-item:Relatório, [data-submenu="relatorio"]
+WAIT_FOR: .relatorio-page, .report-page, [data-page="relatorio"]:visible
+SCREENSHOT: crm-relatorio-page.png
+
+# And: e clicar no botão Filtrar
+CLICK: button:has-text("Filtrar"), .btn-filter, [data-action="filter"]
+WAIT: 1000
+
+# Then: então deve ser retornado o filtro do Relatório
+WAIT_FOR: .filter-panel, .filtro-relatorio, [data-filter="relatorio"]:visible
+VERIFY: .filter-panel, .filtro-relatorio, [data-filter="relatorio"]:visible
+SCREENSHOT: filtro-relatorio-exibido.png
+
+# ===========================================
+# CENÁRIO BDD 12: SUPERVISOR FILTRANDO RELATÓRIO POR PERÍODO
+# ===========================================
+# Given: Dado que eu Supervisor estou na página de Relatórios
+# When: Quando seleciono um período específico
+# And: E clico em Gerar Relatório
+# Then: Então deve ser exibido o relatório filtrado
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+CLICK: .menu-item:CRM, .nav-item:CRM, [data-menu="crm"]
+CLICK: .submenu-item:Relatório, .menu-item:Relatório, [data-submenu="relatorio"]
+WAIT_FOR: .relatorio-page, .report-page, [data-page="relatorio"]:visible
+SCREENSHOT: supervisor-na-pagina-relatorios.png
+
+# When: quando seleciono um período específico
+CLICK: input[type="date"], .date-picker, [data-field="data-inicio"]
+FILL: input[type="date"], .date-picker, [data-field="data-inicio"]:01/01/2024
+CLICK: input[type="date"], .date-picker, [data-field="data-fim"]
+FILL: input[type="date"], .date-picker, [data-field="data-fim"]:31/12/2024
+SCREENSHOT: periodo-selecionado.png
+
+# And: e clico em Gerar Relatório
+CLICK: button:has-text("Gerar Relatório"), .btn-generate, [data-action="generate-report"]
+WAIT: 3000
+
+# Then: então deve ser exibido o relatório filtrado
+WAIT_FOR: .report-content, .relatorio-conteudo, [data-report="content"]:visible
+VERIFY: .report-content, .relatorio-conteudo, [data-report="content"]:visible
+SCREENSHOT: relatorio-filtrado-exibido.png
+
+# ===========================================
+# CENÁRIO BDD 13: SUPERVISOR EXPORTANDO RELATÓRIO
+# ===========================================
+# Given: Dado que eu Supervisor tenho um relatório gerado
+# When: Quando clico em Exportar para Excel
+# Then: Então deve ser baixado o arquivo Excel com os dados
+
+NAVIGATE: https://nemesys.hml.nossafintech.com.br
+WAIT_FOR: input[type="email"], input[name="email"], input[name="username"]:visible
+FILL: input[type="email"], input[name="email"], input[name="username"]:emerson.teste
+FILL: input[type="password"]:Fintech@2025
+CLICK: button[type="submit"], button:has-text("Entrar"), button:has-text("Login")
+CLICK: .menu-item:CRM, .nav-item:CRM, [data-menu="crm"]
+CLICK: .submenu-item:Relatório, .menu-item:Relatório, [data-submenu="relatorio"]
+CLICK: button:has-text("Gerar Relatório"), .btn-generate, [data-action="generate-report"]
+WAIT_FOR: .report-content, .relatorio-conteudo, [data-report="content"]:visible
+SCREENSHOT: relatorio-gerado-disponivel.png
+
+# When: quando clico em Exportar para Excel
+CLICK: button:has-text("Exportar"), .btn-export, [data-action="export"]
+CLICK: .export-option:Excel, .export-excel, [data-format="excel"]
+WAIT: 2000
+
+# Then: então deve ser baixado o arquivo Excel com os dados
+VERIFY: .download-success, .export-success, [data-download="success"]:visible
+SCREENSHOT: arquivo-excel-baixado.png
